@@ -1,0 +1,6 @@
+.DS_Store
+*.pyc
+MANIFEST
+build/
+dist/
+.idea
