@@ -1,13 +1,13 @@
-Google Spreadsheet API
+Google Spreadsheets API
 ========================
-A simple Python wrapper for the Google Spreadsheet API.
+A simple Python wrapper for the Google Spreadsheeta API.
 
 
 Features
 --------
 
-* An object oriented interface to Worksheets.
-* Supports List Feed view of spreadsheet rows, represented as dictionaries.
+* An object oriented interface for Worksheets
+* Supports List Feed view of spreadsheet rows, represented as dictionaries
 * Compatible with Google App Engine
 
 
@@ -23,8 +23,7 @@ Usage
 List Spreadsheets and Worksheets:
 
      >>> from google_spreadsheet.api import SpreadsheetAPI
-     >>> api = SpreadsheetAPI(GOOGLE_SPREADSHEET_USER,
-                     GOOGLE_SPREADSHEET_PASSWORD, GOOGLE_SPREADSHEET_SOURCE)
+     >>> api = SpreadsheetAPI(GOOGLE_SPREADSHEET_USER, GOOGLE_SPREADSHEET_PASSWORD, GOOGLE_SPREADSHEET_SOURCE)
      >>> spreadsheets = api.list_spreadsheets()
      >>> spreadsheets
      [('MyFirstSpreadsheet', 'tkZQWzwHEjKTWFFCAgw'), ('MySecondSpreadsheet', 't5I-ZPGdXjTrjMefHcg'), ('MyThirdSpreadsheet', 't0heCWhzCmm9Y-GTTM_Q')]
@@ -34,7 +33,7 @@ List Spreadsheets and Worksheets:
 
 Please note that in order to work with a Google Spreadsheet it must be accessible
 to the user who's login credentials are provided. The `GOOGLE_SPREADSHEET_SOURCE`
-is used by google to identify your application and track API calls.
+argument is used by Google to identify your application and track API calls.
 
 Working with a Worksheet:
 
@@ -58,6 +57,13 @@ That's it.
 For more information about these calls, please consult the [Google Spreadsheets
 API Developer Guide](https://developers.google.com/google-apps/spreadsheets/).
 
+Tests
+------
+To run the test suite please follow these steps:
+
+* Make sure [Nose](http://readthedocs.org/docs/nose/en/latest/) is installed: (`pip install nose`)
+* Create a local file named: `test_settings.py` with the following variables set to the relevant values: `GOOGLE_SPREADSHEET_USER`, `GOOGLE_SPREADSHEET_PASSWORD`, `GOOGLE_SPREADSHEET_SOURCE`, `GOOGLE_SPREADSHEET_KEY`, `GOOGLE_WORKSHEET_KEY`
+* Run `nosetests`
 
 License
 -------
