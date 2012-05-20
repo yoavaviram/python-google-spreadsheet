@@ -1,6 +1,8 @@
 Google Spreadsheets API
 ========================
 A simple Python wrapper for the Google Spreadsheeta API.
+[![Build Status](https://secure.travis-ci.org/yoavaviram/python-google-spreadsheet.png?branch=master)](http://travis-ci.org/yoavaviram/python-google-spreadsheet)
+
 
 
 Features
