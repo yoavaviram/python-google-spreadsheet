@@ -120,7 +120,7 @@ class Worksheet(object):
         """Update Row
 
         :param index:
-            An integer designating the index of a row to update.
+            An integer designating the index of a row to update (zero based).
         :param row_data:
             A dictionary containing row data.
         :return:

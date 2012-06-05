@@ -1,12 +1,12 @@
 from setuptools import setup, find_packages
-from os.path import join, dirname
 
-version = '1.0.1'
+
+version = '1.0.2'
+
 
 setup(name='python-google-spreadsheet',
       version=version,
       description="A simple Python wrapper for the Google Spreadsheets API",
-      long_description=open(join(dirname(__file__), 'README.md')).read(),
       # http://pypi.python.org/pypi?:action=list_classifiers
       classifiers=[
           "Development Status :: 5 - Production/Stable",

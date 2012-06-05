@@ -29,7 +29,7 @@ List Spreadsheets and Worksheets:
      >>> spreadsheets = api.list_spreadsheets()
      >>> spreadsheets
      [('MyFirstSpreadsheet', 'tkZQWzwHEjKTWFFCAgw'), ('MySecondSpreadsheet', 't5I-ZPGdXjTrjMefHcg'), ('MyThirdSpreadsheet', 't0heCWhzCmm9Y-GTTM_Q')]
-     >>> worksheets = spreadsheet.list_worksheets(spreadsheets[0][1])
+     >>> worksheets = api.list_worksheets(spreadsheets[0][1])
      >>> worksheets
      [('MyFirstWorksheet', 'od7'), ('MySecondWorksheet', 'od6'), ('MyThirdWorksheet', 'od4')]
 
