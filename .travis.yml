@@ -6,5 +6,5 @@ install:
   - pip install nose --use-mirrors
   - pip install pep8 --use-mirrors
 script: 
-  - "pep8 --ignore=E501,E225 google_spreadsheet"
+  - "pep8 --ignore=E501,E225,E128 google_spreadsheet"
   - nosetests 
