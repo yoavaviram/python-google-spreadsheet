@@ -55,10 +55,12 @@ Working with a Worksheet:
     >>> sheet.delete_all_rows()
 
 Advanced Queries:
+
     >>> sheet = spreadsheet.get_worksheet('tkZQWzwHEjKTWFFCAgw', 'od7')
     >>> rows = sheet.get_rows(query="age > 25 and height < 175")
 
 Sort:
+
     >>> sheet = spreadsheet.get_worksheet('tkZQWzwHEjKTWFFCAgw', 'od7')
     >>> rows = sheet.get_rows(order_by='column:age', reverse='true')
 
