@@ -84,10 +84,6 @@ class Worksheet(object):
         self.spreadsheet_key = spreadsheet_key
         self.worksheet_key = worksheet_key
         self.keys = {'key': spreadsheet_key, 'wksht_id': worksheet_key}
-        self.entries = None
-
-    def flush_entry_cache(self):
-        self.entries = None
 
     def _row_to_dict(self, row):
         """Turn a row of values into a dictionary.
@@ -98,23 +94,66 @@ class Worksheet(object):
         """
         return dict([(key, row.custom[key].text) for key in row.custom])
 
-    def _get_row_entries(self):
+    def _get_row_entries(self, query=None, order_by=None, reverse=None):
         """Get Row Entries
 
         :return:
-            A rows entry
+            A rows entry.
         """
-        if not self.entries:
-            self.entries = self.gd_client.GetListFeed(**self.keys).entry
-        return self.entries
+        query = self._make_query(query, order_by, reverse)
+        print query
+        return self.gd_client.GetListFeed(
+                query=query, **self.keys).entry
 
-    def get_rows(self):
+    def _make_query(self, query=None, order_by=None, reverse=None):
+        """Make Query.
+
+         A utility method to construct a query.
+        :return:
+            A :class:`~,gdata.spreadsheet.service.ListQuery` or None.
+        """
+        if query or order_by or reverse:
+            q = gdata.spreadsheet.service.ListQuery()
+            if query:
+                q.sq = query
+            if order_by:
+                q.orderby = order_by
+            if reverse:
+                q.reverse = reverse
+            return q
+        else:
+            return None
+
+    def get_rows(self, query=None, order_by=None, reverse=None):
         """Get Rows
 
+        :param query:
+            A string structured query on the full text in the worksheet.
+              [columnName][binaryOperator][value]
+              Supported binaryOperators are:
+              - (), for overriding order of operations
+              - = or ==, for strict equality
+              - <> or !=, for strict inequality
+              - and or &&, for boolean and
+              - or or ||, for boolean or.
+        :param order_by:
+            A string which specifies what column to use in ordering the
+            entries in the feed. By position (the default): 'position' returns
+            rows in the order in which they appear in the GUI. Row 1, then
+            row 2, then row 3, and so on. By column:
+            'column:columnName' sorts rows in ascending order based on the
+            values in the column with the given columnName, where
+            columnName is the value in the header row for that column.
+        :param reverse:
+            A string which specifies whether to sort in descending or ascending
+            order.Reverses default sort order: 'true' results in a descending
+            sort; 'false' (the default) results in an ascending sort.
         :return:
             A list of rows dictionaries.
         """
-        return [self._row_to_dict(row) for row in self._get_row_entries()]
+        return [self._row_to_dict(row)
+            for row in self._get_row_entries(
+            query=query, order_by=order_by, reverse=reverse)]
 
     def update_row(self, index, row_data):
         """Update Row
@@ -132,7 +171,6 @@ class Worksheet(object):
         entry = self.gd_client.UpdateRow(entries[index], rows[index])
         if not isinstance(entry, gdata.spreadsheet.SpreadsheetsList):
             raise WorksheetException("Row update failed: '{0}'".format(entry))
-        self.entries[index] = entry
         return self._row_to_dict(entry)
 
     def insert_row(self, row_data):
@@ -146,8 +184,6 @@ class Worksheet(object):
         entry = self.gd_client.InsertRow(row_data, **self.keys)
         if not isinstance(entry, gdata.spreadsheet.SpreadsheetsList):
             raise WorksheetException("Row insert failed: '{0}'".format(entry))
-        if self.entries:
-            self.entries.append(entry)
         return self._row_to_dict(entry)
 
     def delete_row(self, index):
@@ -158,8 +194,6 @@ class Worksheet(object):
         """
         entries = self._get_row_entries()
         self.gd_client.DeleteRow(entries[index])
-        if self.entries:
-            del self.entries[index]
 
     def delete_all_rows(self):
         """Delete All Rows

@@ -7,7 +7,9 @@ from test_settings import (GOOGLE_SPREADSHEET_USER,
                            GOOGLE_SPREADSHEET_PASSWORD,
                            GOOGLE_SPREADSHEET_SOURCE,
                            GOOGLE_SPREADSHEET_KEY,
-                           GOOGLE_WORKSHEET_KEY)
+                           GOOGLE_WORKSHEET_KEY,
+                           COLUMN_NAME,
+                           COLUMN_UNIQUE_VALUE)
 
 
 class TestSpreadsheetAPI(TestCase):
@@ -116,3 +118,20 @@ class TestWorksheet(TestCase):
         delete_rows = self.sheet.get_rows()
         assert_equals(len(delete_rows), num_rows)
         assert_equals(delete_rows[-1], rows[-1])
+
+    def test_query(self):
+        """Test Query.
+
+        Filter rows by a unique column vlaue.
+        """
+        rows = self.sheet.get_rows(
+            query='{0} = {1}'.format(COLUMN_NAME, COLUMN_UNIQUE_VALUE))
+        assert_equals(len(rows), 1)
+
+    def test_sort(self):
+        """Test Sort.
+
+        Sort ascending and descending.
+        """
+        rows = self.sheet.get_rows(
+            order_by='column:{0}'.format(COLUMN_NAME), reverse='false')

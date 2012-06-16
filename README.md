@@ -54,6 +54,14 @@ Working with a Worksheet:
     >>> sheet.delete_row(18)
     >>> sheet.delete_all_rows()
 
+Advanced Queries:
+    >>> sheet = spreadsheet.get_worksheet('tkZQWzwHEjKTWFFCAgw', 'od7')
+    >>> rows = sheet.get_rows(query="age > 25 and height < 175")
+
+Sort:
+    >>> sheet = spreadsheet.get_worksheet('tkZQWzwHEjKTWFFCAgw', 'od7')
+    >>> rows = sheet.get_rows(order_by='column:age', reverse='true')
+
 That's it.
 
 For more information about these calls, please consult the [Google Spreadsheets
@@ -64,7 +72,7 @@ Tests
 To run the test suite please follow these steps:
 
 * Make sure [Nose](http://readthedocs.org/docs/nose/en/latest/) is installed: (`pip install nose`)
-* Create a local file named: `test_settings.py` with the following variables set to the relevant values: `GOOGLE_SPREADSHEET_USER`, `GOOGLE_SPREADSHEET_PASSWORD`, `GOOGLE_SPREADSHEET_SOURCE`, `GOOGLE_SPREADSHEET_KEY`, `GOOGLE_WORKSHEET_KEY`
+* Create a local file named: `test_settings.py` with the following variables set to the relevant values: `GOOGLE_SPREADSHEET_USER`, `GOOGLE_SPREADSHEET_PASSWORD`, `GOOGLE_SPREADSHEET_SOURCE`, `GOOGLE_SPREADSHEET_KEY`, `GOOGLE_WORKSHEET_KEY`, 'COLUMN_NAME', 'COLUMN_UNIQUE_VALUE'
 * Run `nosetests`
 
 License
