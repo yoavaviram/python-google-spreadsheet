@@ -103,7 +103,7 @@ class Worksheet(object):
         query = self._make_query(query, order_by, reverse)
         print query
         return self.gd_client.GetListFeed(
-                query=query, **self.keys).entry
+            query=query, **self.keys).entry
 
     def _make_query(self, query=None, order_by=None, reverse=None):
         """Make Query.
@@ -153,7 +153,7 @@ class Worksheet(object):
         """
         return [self._row_to_dict(row)
             for row in self._get_row_entries(
-            query=query, order_by=order_by, reverse=reverse)]
+                query=query, order_by=order_by, reverse=reverse)]
 
     def update_row(self, index, row_data):
         """Update Row
