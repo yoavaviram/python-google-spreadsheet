@@ -74,7 +74,7 @@ Tests
 To run the test suite please follow these steps:
 
 * Make sure [Nose](http://readthedocs.org/docs/nose/en/latest/) is installed: (`pip install nose`)
-* Create a local file named: `test_settings.py` with the following variables set to the relevant values: `GOOGLE_SPREADSHEET_USER`, `GOOGLE_SPREADSHEET_PASSWORD`, `GOOGLE_SPREADSHEET_SOURCE`, `GOOGLE_SPREADSHEET_KEY`, `GOOGLE_WORKSHEET_KEY`, 'COLUMN_NAME', 'COLUMN_UNIQUE_VALUE'
+* Create a local file named: `test_settings.py` with the following variables set to the relevant values: `GOOGLE_SPREADSHEET_USER`, `GOOGLE_SPREADSHEET_PASSWORD`, `GOOGLE_SPREADSHEET_SOURCE`, `GOOGLE_SPREADSHEET_KEY`, `GOOGLE_WORKSHEET_KEY`, `COLUMN_NAME`, `COLUMN_UNIQUE_VALUE`
 * Run `nosetests`
 
 License
