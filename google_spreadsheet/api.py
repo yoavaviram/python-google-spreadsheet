@@ -97,7 +97,7 @@ class Worksheet(object):
         return dict([(key, row.custom[key].text) for key in row.custom])
 
     def _get_row_entries(self, query=None):
-        """Get Row Entries
+        """Get Row Entries.
 
         :return:
             A rows entry.
@@ -115,6 +115,7 @@ class Worksheet(object):
         """Make Query.
 
          A utility method to construct a query.
+
         :return:
             A :class:`~,gdata.spreadsheet.service.ListQuery` or None.
         """
@@ -177,7 +178,7 @@ class Worksheet(object):
             The updated row.
         """
         entry = self._get_row_entries(self.query)[index]
-        row = self._row_to_dict(entry) 
+        row = self._row_to_dict(entry)
         row.update(row_data)
         entry = self.gd_client.UpdateRow(entry, row)
         if not isinstance(entry, gdata.spreadsheet.SpreadsheetsList):
@@ -197,25 +198,25 @@ class Worksheet(object):
         if not isinstance(entry, gdata.spreadsheet.SpreadsheetsList):
             raise WorksheetException("Row insert failed: '{0}'".format(entry))
         if self.entries:
-            self.entries.append(entry)            
+            self.entries.append(entry)
         return self._row_to_dict(entry)
 
     def delete_row(self, index):
         """Delete Row
 
         :param index:
-            A row index.             
+            A row index.
             Index is relative to the returned result set, not to the original
             spreadseet.
         """
         entry = self._get_row_entries(self.query)[index]
         self.gd_client.DeleteRow(entry)
-        del self.entries[index]        
+        del self.entries[index]
 
     def delete_all_rows(self):
         """Delete All Rows
         """
-        entries = self._get_row_entries()
+        entries = self._get_row_entries(self.query)
         for entry in entries:
             self.delete_row(entry)
         self._flush_cache()
