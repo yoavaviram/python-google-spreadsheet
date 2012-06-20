@@ -84,6 +84,8 @@ class Worksheet(object):
         self.spreadsheet_key = spreadsheet_key
         self.worksheet_key = worksheet_key
         self.keys = {'key': spreadsheet_key, 'wksht_id': worksheet_key}
+        self.entries = None
+        self.query = None
 
     def _row_to_dict(self, row):
         """Turn a row of values into a dictionary.
@@ -94,16 +96,20 @@ class Worksheet(object):
         """
         return dict([(key, row.custom[key].text) for key in row.custom])
 
-    def _get_row_entries(self, query=None, order_by=None, reverse=None):
+    def _get_row_entries(self, query=None):
         """Get Row Entries
 
         :return:
             A rows entry.
         """
-        query = self._make_query(query, order_by, reverse)
-        print query
-        return self.gd_client.GetListFeed(
-            query=query, **self.keys).entry
+        if not self.entries:
+            self.entries = self.gd_client.GetListFeed(
+                query=query, **self.keys).entry
+        return self.entries
+
+    def _flush_cache(self):
+        """Flush Entries Cache."""
+        self.entries = None
 
     def _make_query(self, query=None, order_by=None, reverse=None):
         """Make Query.
@@ -151,26 +157,32 @@ class Worksheet(object):
         :return:
             A list of rows dictionaries.
         """
+        new_query = self._make_query(query, order_by, reverse)
+        if self.query != new_query:
+            self._flush_cache()
+        self.query = new_query
         return [self._row_to_dict(row)
-            for row in self._get_row_entries(
-                query=query, order_by=order_by, reverse=reverse)]
+            for row in self._get_row_entries(query=self.query)]
 
     def update_row(self, index, row_data):
         """Update Row
 
         :param index:
             An integer designating the index of a row to update (zero based).
+            Index is relative to the returned result set, not to the original
+            spreadseet.
         :param row_data:
             A dictionary containing row data.
         :return:
-            A row dictionary for the updated row.
+            The updated row.
         """
-        entries = self._get_row_entries()
-        rows = self.get_rows()
-        rows[index].update(row_data)
-        entry = self.gd_client.UpdateRow(entries[index], rows[index])
+        entry = self._get_row_entries(self.query)[index]
+        row = self._row_to_dict(entry) 
+        row.update(row_data)
+        entry = self.gd_client.UpdateRow(entry, row)
         if not isinstance(entry, gdata.spreadsheet.SpreadsheetsList):
             raise WorksheetException("Row update failed: '{0}'".format(entry))
+        self.entries[index] = entry
         return self._row_to_dict(entry)
 
     def insert_row(self, row_data):
@@ -184,16 +196,21 @@ class Worksheet(object):
         entry = self.gd_client.InsertRow(row_data, **self.keys)
         if not isinstance(entry, gdata.spreadsheet.SpreadsheetsList):
             raise WorksheetException("Row insert failed: '{0}'".format(entry))
+        if self.entries:
+            self.entries.append(entry)            
         return self._row_to_dict(entry)
 
     def delete_row(self, index):
         """Delete Row
 
         :param index:
-            A row index.
+            A row index.             
+            Index is relative to the returned result set, not to the original
+            spreadseet.
         """
-        entries = self._get_row_entries()
-        self.gd_client.DeleteRow(entries[index])
+        entry = self._get_row_entries(self.query)[index]
+        self.gd_client.DeleteRow(entry)
+        del self.entries[index]        
 
     def delete_all_rows(self):
         """Delete All Rows
@@ -201,3 +218,4 @@ class Worksheet(object):
         entries = self._get_row_entries()
         for entry in entries:
             self.delete_row(entry)
+        self._flush_cache()
