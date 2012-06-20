@@ -25,10 +25,12 @@ Usage
 List Spreadsheets and Worksheets:
 
      >>> from google_spreadsheet.api import SpreadsheetAPI
-     >>> api = SpreadsheetAPI(GOOGLE_SPREADSHEET_USER, GOOGLE_SPREADSHEET_PASSWORD, GOOGLE_SPREADSHEET_SOURCE)
+     >>> api = SpreadsheetAPI(GOOGLE_SPREADSHEET_USER, 
+            GOOGLE_SPREADSHEET_PASSWORD, GOOGLE_SPREADSHEET_SOURCE)
      >>> spreadsheets = api.list_spreadsheets()
      >>> spreadsheets
-     [('MyFirstSpreadsheet', 'tkZQWzwHEjKTWFFCAgw'), ('MySecondSpreadsheet', 't5I-ZPGdXjTrjMefHcg'), ('MyThirdSpreadsheet', 't0heCWhzCmm9Y-GTTM_Q')]
+     [('MyFirstSpreadsheet', 'tkZQWzwHEjKTWFFCAgw'), ('MySecondSpreadsheet', 't5I-ZPGdXjTrjMefHcg'), 
+     ('MyThirdSpreadsheet', 't0heCWhzCmm9Y-GTTM_Q')]
      >>> worksheets = api.list_worksheets(spreadsheets[0][1])
      >>> worksheets
      [('MyFirstWorksheet', 'od7'), ('MySecondWorksheet', 'od6'), ('MyThirdWorksheet', 'od4')]
