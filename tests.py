@@ -27,6 +27,8 @@ class TestSpreadsheetAPI(TestCase):
         * GOOGLE_SPREADSHEET_SOURCE
         * GOOGLE_SPREADSHEET_KEY
         * GOOGLE_WORKSHEET_KEY
+        * COLUMN_NAME
+        * COLUMN_UNIQUE_VALUE
 
         Are imported from a custom file named: 'test_settings.py'
         """
@@ -77,6 +79,8 @@ class TestWorksheet(TestCase):
         * GOOGLE_SPREADSHEET_SOURCE
         * GOOGLE_SPREADSHEET_KEY
         * GOOGLE_WORKSHEET_KEY
+        * COLUMN_NAME
+        * COLUMN_UNIQUE_VALUE        
 
         Are imported from a custom file named: 'test_settings.py'
         """
@@ -114,7 +118,14 @@ class TestWorksheet(TestCase):
         self.sheet.insert_row(new_row)
         insert_rows = self.sheet.get_rows()
         assert_equals(len(insert_rows), num_rows + 1)
+        self.sheet._flush_cache()
+        insert_rows = self.sheet.get_rows()
+        assert_equals(len(insert_rows), num_rows + 1)        
         self.sheet.delete_row(num_rows)
+        delete_rows = self.sheet.get_rows()
+        assert_equals(len(delete_rows), num_rows)
+        assert_equals(delete_rows[-1], rows[-1])
+        self.sheet._flush_cache()
         delete_rows = self.sheet.get_rows()
         assert_equals(len(delete_rows), num_rows)
         assert_equals(delete_rows[-1], rows[-1])
