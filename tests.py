@@ -80,7 +80,7 @@ class TestWorksheet(TestCase):
         * GOOGLE_SPREADSHEET_KEY
         * GOOGLE_WORKSHEET_KEY
         * COLUMN_NAME
-        * COLUMN_UNIQUE_VALUE        
+        * COLUMN_UNIQUE_VALUE
 
         Are imported from a custom file named: 'test_settings.py'
         """
@@ -132,7 +132,7 @@ class TestWorksheet(TestCase):
         assert_equals(len(insert_rows), num_rows + 1)
         self.sheet._flush_cache()
         insert_rows = self.sheet.get_rows()
-        assert_equals(len(insert_rows), num_rows + 1)        
+        assert_equals(len(insert_rows), num_rows + 1)
         self.sheet.delete_row_by_index(num_rows)
         delete_rows = self.sheet.get_rows()
         assert_equals(len(delete_rows), num_rows)
@@ -156,7 +156,7 @@ class TestWorksheet(TestCase):
         assert_equals(len(insert_rows), num_rows + 1)
         self.sheet._flush_cache()
         insert_rows = self.sheet.get_rows()
-        assert_equals(len(insert_rows), num_rows + 1)        
+        assert_equals(len(insert_rows), num_rows + 1)
         self.sheet.delete_row(new_row)
         delete_rows = self.sheet.get_rows()
         assert_equals(len(delete_rows), num_rows)
