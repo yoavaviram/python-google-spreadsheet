@@ -1,6 +1,9 @@
 import gdata.spreadsheet.service
 
 
+ID_FIELD = '__rowid__'
+
+
 class WorksheetException(Exception):
     """Base class for spreadsheet exceptions.
     """
@@ -92,9 +95,11 @@ class Worksheet(object):
         :param row:
             A row element.
         :return:
-            A dict.
+            A dictionary with rows.
         """
-        return dict([(key, row.custom[key].text) for key in row.custom])
+        result = dict([(key, row.custom[key].text) for key in row.custom])
+        result[ID_FIELD] = row.id.text.split('/')[-1]
+        return result
 
     def _get_row_entries(self, query=None):
         """Get Row Entries.
@@ -106,6 +111,23 @@ class Worksheet(object):
             self.entries = self.gd_client.GetListFeed(
                 query=query, **self.keys).entry
         return self.entries
+
+    def _get_row_entry_by_id(self, id):
+        """Get Row Entry by ID
+
+        First search in cache, then fetch.
+        :param id:
+            A string row ID.
+        :return:
+            A row entry.
+        """
+        entry = [entry for entry in self.entries
+                 if entry.id.text.split('/')[-1] == id]
+        if not entry:
+            entry = self.gd_client.GetListFeed(row_id=id, **self.keys).entry
+            if not entry:
+                raise WorksheetException("Row ID '{0}' not found.").format(id)
+        return entry[0]
 
     def _flush_cache(self):
         """Flush Entries Cache."""
@@ -165,8 +187,34 @@ class Worksheet(object):
         return [self._row_to_dict(row)
             for row in self._get_row_entries(query=self.query)]
 
-    def update_row(self, index, row_data):
-        """Update Row
+    def update_row(self, row_data):
+        """Update Row (By ID).
+
+        Only the fields supplied will be updated.
+        :param row_data:
+            A dictionary containing row data. The row will be updated according
+            to the value in the ID_FIELD.
+        :return:
+            The updated row.
+        """
+        try:
+            id = row_data[ID_FIELD]
+        except KeyError:
+            raise WorksheetException("Row does not contain '{0}' field. "
+                                     "Please update by index.".format(ID_FIELD))
+        entry = self._get_row_entry_by_id(id)
+        new_row = self._row_to_dict(entry)
+        new_row.update(row_data)
+        entry = self.gd_client.UpdateRow(entry, new_row)
+        if not isinstance(entry, gdata.spreadsheet.SpreadsheetsList):
+            raise WorksheetException("Row update failed: '{0}'".format(entry))
+        for i,e in enumerate(self.entries):
+            if e.id.text == entry.id.text:
+              self.entries[i] = entry
+        return self._row_to_dict(entry)
+
+    def update_row_by_index(self, index, row_data):
+        """Update Row By Index
 
         :param index:
             An integer designating the index of a row to update (zero based).
@@ -201,8 +249,26 @@ class Worksheet(object):
             self.entries.append(entry)
         return self._row_to_dict(entry)
 
-    def delete_row(self, index):
-        """Delete Row
+    def delete_row(self, row):
+        """Delete Row (By ID).
+
+        Requires that the given row dictionary contains an ID_FIELD.
+        :param row:
+            A row dictionary to delete.
+        """
+        try:
+            id = row[ID_FIELD]
+        except KeyError:
+            raise WorksheetException("Row does not contain '{0}' field. "
+                                     "Please delete by index.".format(ID_FIELD))
+        entry = self._get_row_entry_by_id(id)
+        self.gd_client.DeleteRow(entry)
+        for i,e in enumerate(self.entries):
+            if e.id.text == entry.id.text:
+                del self.entries[i]
+
+    def delete_row_by_index(self, index):
+        """Delete Row By Index
 
         :param index:
             A row index.

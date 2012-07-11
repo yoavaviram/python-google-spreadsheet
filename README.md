@@ -59,7 +59,7 @@ Working with a Worksheet:
 Advanced Queries:
 
     >>> sheet = spreadsheet.get_worksheet('tkZQWzwHEjKTWFFCAgw', 'od7')
-    >>> rows = sheet.get_rows(query="age > 25 and height < 175")
+    >>> rows = sheet.get_rows(query='name = "Joe" and height < 175')
 
 Sort:
 

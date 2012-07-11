@@ -95,15 +95,27 @@ class TestWorksheet(TestCase):
         rows = self.sheet.get_rows()
         assert_true(len(rows))
 
-    def test_update_row(self):
-        """Test Update Rows.
+    def test_update_row_by_index(self):
+        """Test Update Rows By Index.
 
-        First gets all rows, than updates lest row.
+        First gets all rows, than updates last row.
         """
         rows = self.sheet.get_rows()
         row_index = len(rows) - 1
         new_row = rows[0]
-        row = self.sheet.update_row(row_index, new_row)
+        row = self.sheet.update_row_by_index(row_index, new_row)
+        del row['__rowid__']
+        del new_row['__rowid__']
+        assert_equals(row, new_row)
+
+    def test_update_row_by_id(self):
+        """Test Update Rows By ID.
+
+        First gets all rows, than updates last row.
+        """
+        rows = self.sheet.get_rows()
+        new_row = rows[0]
+        row = self.sheet.update_row(new_row)
         assert_equals(row, new_row)
 
     def test_insert_delete_row(self):
@@ -121,7 +133,31 @@ class TestWorksheet(TestCase):
         self.sheet._flush_cache()
         insert_rows = self.sheet.get_rows()
         assert_equals(len(insert_rows), num_rows + 1)        
-        self.sheet.delete_row(num_rows)
+        self.sheet.delete_row_by_index(num_rows)
+        delete_rows = self.sheet.get_rows()
+        assert_equals(len(delete_rows), num_rows)
+        assert_equals(delete_rows[-1], rows[-1])
+        self.sheet._flush_cache()
+        delete_rows = self.sheet.get_rows()
+        assert_equals(len(delete_rows), num_rows)
+        assert_equals(delete_rows[-1], rows[-1])
+
+    def test_delete_by_id(self):
+        """Test Delete Row By ID.
+
+        First gets all rows, than inserts a new row, finally deletes the new
+        row by ID.
+        """
+        rows = self.sheet.get_rows()
+        num_rows = len(rows)
+        new_row = rows[0]
+        new_row = self.sheet.insert_row(new_row)
+        insert_rows = self.sheet.get_rows()
+        assert_equals(len(insert_rows), num_rows + 1)
+        self.sheet._flush_cache()
+        insert_rows = self.sheet.get_rows()
+        assert_equals(len(insert_rows), num_rows + 1)        
+        self.sheet.delete_row(new_row)
         delete_rows = self.sheet.get_rows()
         assert_equals(len(delete_rows), num_rows)
         assert_equals(delete_rows[-1], rows[-1])
