@@ -201,16 +201,16 @@ class Worksheet(object):
             id = row_data[ID_FIELD]
         except KeyError:
             raise WorksheetException("Row does not contain '{0}' field. "
-                                     "Please update by index.".format(ID_FIELD))
+                                "Please update by index.".format(ID_FIELD))
         entry = self._get_row_entry_by_id(id)
         new_row = self._row_to_dict(entry)
         new_row.update(row_data)
         entry = self.gd_client.UpdateRow(entry, new_row)
         if not isinstance(entry, gdata.spreadsheet.SpreadsheetsList):
             raise WorksheetException("Row update failed: '{0}'".format(entry))
-        for i,e in enumerate(self.entries):
+        for i, e in enumerate(self.entries):
             if e.id.text == entry.id.text:
-              self.entries[i] = entry
+                self.entries[i] = entry
         return self._row_to_dict(entry)
 
     def update_row_by_index(self, index, row_data):
@@ -260,10 +260,10 @@ class Worksheet(object):
             id = row[ID_FIELD]
         except KeyError:
             raise WorksheetException("Row does not contain '{0}' field. "
-                                     "Please delete by index.".format(ID_FIELD))
+                                "Please delete by index.".format(ID_FIELD))
         entry = self._get_row_entry_by_id(id)
         self.gd_client.DeleteRow(entry)
-        for i,e in enumerate(self.entries):
+        for i, e in enumerate(self.entries):
             if e.id.text == entry.id.text:
                 del self.entries[i]
 
