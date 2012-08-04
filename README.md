@@ -47,13 +47,13 @@ Working with a Worksheet:
     18
     >>> row_to_update = rows[0]
     >>> row_to_update['name'] = 'New Name'
-    >>> sheet.update_row(0, row_to_update)
+    >>> sheet.update_row(row_to_update)
     {'name': 'New Name'...}
     >>> row_to_insert = rows[0]
     >>> row_to_insert['name'] = 'Another Name'
-    >>> sheet.insert_row(row_to_insert)
+    >>> row = sheet.insert_row(row_to_insert)
     {'name': 'Another Name'...}
-    >>> sheet.delete_row(18)
+    >>> sheet.delete_row(row)
     >>> sheet.delete_all_rows()
 
 Advanced Queries:
