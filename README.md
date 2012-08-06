@@ -61,6 +61,12 @@ Advanced Queries:
     >>> sheet = spreadsheet.get_worksheet('tkZQWzwHEjKTWFFCAgw', 'od7')
     >>> rows = sheet.get_rows(query='name = "Joe" and height < 175')
 
+Or filter in memory:
+
+    >>> sheet = spreadsheet.get_worksheet('tkZQWzwHEjKTWFFCAgw', 'od7')
+    >>> filtered_rows = sheet.get_rows(
+            filter_func=lambda row: row['status'] == "READY")
+
 Sort:
 
     >>> sheet = spreadsheet.get_worksheet('tkZQWzwHEjKTWFFCAgw', 'od7')
