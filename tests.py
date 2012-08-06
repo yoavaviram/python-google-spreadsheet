@@ -182,3 +182,14 @@ class TestWorksheet(TestCase):
         """
         rows = self.sheet.get_rows(
             order_by='column:{0}'.format(COLUMN_NAME), reverse='false')
+        assert_true(rows)
+
+    def test_filter(self):
+        """Test Filter.
+
+        Tests filter in memory.
+        """
+        filtered_rows = self.sheet.get_rows(
+            filter_func=lambda row: row[COLUMN_NAME] == unicode(
+                COLUMN_UNIQUE_VALUE))
+        assert_equals(1, len(filtered_rows))

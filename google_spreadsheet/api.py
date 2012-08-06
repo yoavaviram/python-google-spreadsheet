@@ -121,7 +121,7 @@ class Worksheet(object):
         :return:
             A row entry.
         """
-        entry = [entry for entry in self.entries
+        entry = [entry for entry in self._get_row_entries()
                  if entry.id.text.split('/')[-1] == id]
         if not entry:
             entry = self.gd_client.GetListFeed(row_id=id, **self.keys).entry
@@ -153,7 +153,8 @@ class Worksheet(object):
         else:
             return None
 
-    def get_rows(self, query=None, order_by=None, reverse=None):
+    def get_rows(self, query=None, order_by=None,
+                 reverse=None, filter_func=None):
         """Get Rows
 
         :param query:
@@ -177,6 +178,10 @@ class Worksheet(object):
             A string which specifies whether to sort in descending or ascending
             order.Reverses default sort order: 'true' results in a descending
             sort; 'false' (the default) results in an ascending sort.
+        :param filter_func:
+            A lambda function which applied to each row, Gets a row dict as
+            argument and returns True or False. Used for filtering rows in
+            memory (as opposed to query which filters on the service side).
         :return:
             A list of rows dictionaries.
         """
@@ -184,8 +189,11 @@ class Worksheet(object):
         if self.query != new_query:
             self._flush_cache()
         self.query = new_query
-        return [self._row_to_dict(row)
+        rows = [self._row_to_dict(row)
             for row in self._get_row_entries(query=self.query)]
+        if filter_func:
+            rows = filter(filter_func, rows)
+        return rows
 
     def update_row(self, row_data):
         """Update Row (By ID).
@@ -271,9 +279,8 @@ class Worksheet(object):
         """Delete Row By Index
 
         :param index:
-            A row index.
-            Index is relative to the returned result set, not to the original
-            spreadseet.
+            A row index. Index is relative to the returned result set, not to
+            the original spreadsheet.
         """
         entry = self._get_row_entries(self.query)[index]
         self.gd_client.DeleteRow(entry)
