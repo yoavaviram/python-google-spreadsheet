@@ -1,3 +1,18 @@
+#!/usr/bin/python
+#
+# Copyright (C) 2012 Yoav Aviram.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 import gdata.spreadsheet.service
 
 
@@ -183,7 +198,7 @@ class Worksheet(object):
             argument and returns True or False. Used for filtering rows in
             memory (as opposed to query which filters on the service side).
         :return:
-            A list of rows dictionaries.
+            A list of row dictionaries.
         """
         new_query = self._make_query(query, order_by, reverse)
         if self.query != new_query:
