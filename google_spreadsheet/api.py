@@ -201,7 +201,7 @@ class Worksheet(object):
             A list of row dictionaries.
         """
         new_query = self._make_query(query, order_by, reverse)
-        if self.query != new_query:
+        if self.query is not None and self.query != new_query:
             self._flush_cache()
         self.query = new_query
         rows = [self._row_to_dict(row)
