@@ -166,6 +166,17 @@ class TestWorksheet(TestCase):
         assert_equals(len(delete_rows), num_rows)
         assert_equals(delete_rows[-1], rows[-1])
 
+    def test_delete_all_rows(self):
+        """Tests deleting of all rows in the sheet
+        """
+        # first retrieve rows and store in memory to re-add after test
+        rows = self.sheet.get_rows()
+        self.sheet.delete_all_rows()
+        assert_equals(len(self.sheet.get_rows()), 0)
+        # add back the rows that were there so the other tests still pass
+        for row in rows:
+          self.sheet.insert_row(row)
+
     def test_query(self):
         """Test Query.
 
