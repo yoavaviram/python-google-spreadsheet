@@ -306,5 +306,5 @@ class Worksheet(object):
         """
         entries = self._get_row_entries(self.query)
         for entry in entries:
-            self.delete_row(entry)
+            self.gd_client.DeleteRow(entry)
         self._flush_cache()
